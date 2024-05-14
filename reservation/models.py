@@ -1,5 +1,4 @@
 from django.db import models
-from account.models import Account
 from table.models import Table
 
 # Create your models here.
@@ -10,4 +9,6 @@ class Reservation(models.Model):
     people_count = models.IntegerField()
     total_price = models.IntegerField()
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=100, unique=True)

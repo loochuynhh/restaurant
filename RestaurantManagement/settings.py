@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account.apps.AccountConfig',
     'specialevent.apps.SpecialeventConfig',
     'menu.apps.MenuConfig',
     'table.apps.TableConfig',
@@ -82,8 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'RestaurantManagement.wsgi.application'
-
-AUTH_USER_MODEL = 'account.Account'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
