@@ -1,8 +1,11 @@
 from django.shortcuts import render
-
+from .models import Menu
 # Create your views here.
-def index(request):
-    return render(request, 'menu.html')
-
-# def about(request):
-#     return render(request, 'app1/about.html')
+def menu(request):
+    foods = Menu.objects.filter(type=True)
+    drinks = Menu.objects.filter(type=False)
+    context = {
+        'foods': foods,
+        'drinks': drinks,
+    }
+    return render(request, 'menu.html', context)
