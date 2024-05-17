@@ -46,23 +46,9 @@ def booking(request):
                 table_id=id_table
             )
             
-            current_site = get_current_site(request=request)
-            mail_subject = 'Activate your reservation.'
-            message = render_to_string('active_email.html', {
-                'fullname': fullname,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(reservation.id))
-            })
-            send_email = EmailMessage(mail_subject, message, to=[email])
-            send_email.send()
-            messages.success(
-                request=request,
-                message="Please confirm your email address to complete the registration"
-            )
-            
             context = {
                 'title': 'Booking Successful',
-                'content': 'Please check email to verify'
+                'content': 'Thank you!'
             }
             return render(request, 'content.html', context)
         else:
@@ -73,37 +59,6 @@ def booking(request):
             }
             return render(request, 'booking.html', context)
         
-def activate(request, uidb64):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        reservation = Reservation.objects.get(pk=uid)
-    except Exception:
-        reservation = None
-
-    if reservation is not None:
-        
-        current_time = timezone.now()
-        time_difference = current_time - reservation.creation_time
-        if time_difference.total_seconds() > HOUR_EXPIRED * 3600:
-            messages.error(request=request, message="Activation link has expired!")
-            context = {
-                'title': 'Activation has expired',
-                'content': 'Your reservation has expired!'
-            }
-            return render(request, 'content.html', context)
-        reservation.is_activated = True
-        reservation.save()
-        messages.success(
-            request=request, message="Your revervation is activated!")
-        context = {
-            'title': 'Verify Successful',
-            'content': 'Thanks for choosing us!'
-        }
-        return render(request, 'content.html', context)
-    else:
-        messages.error(request=request, message="Activation link is invalid!")
-        return redirect('')
-
 @csrf_exempt
 def view_available_tables(request):
     if request.method == "POST":

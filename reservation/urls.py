@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     path('find-tables/', views.view_available_tables, name='find-tables'),
     path('booking/', views.booking, name='booking'),
-    path('activate/<uidb64>', views.activate, name='activate'),
     # path('login/', views.login, name='login'),
     # path('logout/', views.logout, name='logout'),
     # path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
