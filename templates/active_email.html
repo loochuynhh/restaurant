@@ -1,5 +1,5 @@
 {% autoescape off %}
-Hi {{ user.username }},
-Please click on the link to confirm your registration,
+Xin chào {{ user.username }},
+Vui lòng click vào link bên dưới để kích hoạt tài khoản,
 http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 {% endautoescape %}

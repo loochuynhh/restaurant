@@ -1,0 +1,18 @@
+{% load static %}
+
+{% if messages %}
+<div class="d-flex justify-content-center">
+    <div class="messages" id="alert-messages">
+        {% for message in messages %}
+            {% if forloop.first %}
+            <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">
+                {% if message.level == DEFAULT_MESSAGE_LEVELS_ERROR %}
+                Error:
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

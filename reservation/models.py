@@ -11,4 +11,3 @@ class Reservation(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(auto_now_add=True)
-    is_activated = models.BooleanField(default=False)

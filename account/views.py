@@ -32,7 +32,7 @@ def register(request):
             user.save()
 
             current_site = get_current_site(request=request)
-            mail_subject = 'Activate your blog account.'
+            mail_subject = 'Kích hoạt tài khoản.'
             message = render_to_string('active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
@@ -43,7 +43,7 @@ def register(request):
             send_email.send()
             messages.success(
                 request=request,
-                message="Please confirm your email address to complete the registration"
+                message="Vui lòng kiểm tra email để hoàn thành việc đăng ký"
             )
             return redirect('register')
         else:
@@ -93,7 +93,7 @@ def login(request):
             except Exception:
                 pass
             auth.login(request=request, user=user)
-            messages.success(request=request, message="Login successful!")
+            messages.success(request=request, message="Đăng nhập thành công!")
 
             url = request.META.get('HTTP_REFERER')
             try:
@@ -105,7 +105,7 @@ def login(request):
             except Exception:
                 return redirect('menu')
         else:
-            messages.error(request=request, message="Login failed!")
+            messages.error(request=request, message="Đăng nhập thất bại!")
     context = {
         'email': email if 'email' in locals() else '',
         'password': password if 'password' in locals() else '',
@@ -116,7 +116,7 @@ def login(request):
 @login_required(login_url="login")
 def logout(request):
     auth.logout(request)
-    messages.success(request=request, message="You are logged out!")
+    messages.success(request=request, message="Bạn đã đăng xuất!")
     return redirect('login')
 
 
@@ -131,8 +131,9 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         messages.success(
-            request=request, message="Your account is activated, please login!")
+            request=request, 
+            message="Kích hoạt tài khoản thành công. Vui lòng đăng nhập!")
         return render(request, 'login.html')
     else:
-        messages.error(request=request, message="Activation link is invalid!")
-        return redirect('home')
+        messages.error(request=request, message="Không thể kích hoạt tài khoản!")
+        return redirect('')
