@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'aboutUs.apps.AboutUsConfig',
     'account.apps.AccountConfig',
-    'specialevent.apps.SpecialeventConfig',
     'menu.apps.MenuConfig',
     'table.apps.TableConfig',
     'reservation.apps.ReservationConfig',
