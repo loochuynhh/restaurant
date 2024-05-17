@@ -9,7 +9,11 @@ class MenuAdmin(admin.ModelAdmin):
 
     image_tag.short_description = 'Review'
     image_tag.allow_tags = True
-    list_display = [field.name for field in Menu._meta.fields]
+    def food_or_drink(self, obj):
+        return 'Món ăn' if obj.type else 'Đồ uống'
+    food_or_drink.short_description = 'Type'
+    # list_display = [field.name for field in Menu._meta.fields]
+    list_display = ['name','image_tag', 'food_or_drink', 'description', 'price']
     readonly_fields = ['image_tag']
     
 admin.site.register(Menu, MenuAdmin)
