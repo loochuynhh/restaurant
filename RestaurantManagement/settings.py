@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = 'account:login'
 
 # Application definition
 
@@ -51,7 +52,8 @@ INSTALLED_APPS = [
     'menu.apps.MenuConfig',
     'table.apps.TableConfig',
     'reservation.apps.ReservationConfig',
-    'order.apps.OrderConfig'
+    'order.apps.OrderConfig',
+    'comment.apps.CommentConfig'
 ]
 
 MIDDLEWARE = [
