@@ -30,8 +30,7 @@ def booking(request):
         print(start_time_str)
         start_time = datetime.strptime(start_time_str, date_format)
         end_time = start_time + timedelta(hours=DURATION)
-        first_name = request.POST.get('firstname')
-        last_name = request.POST.get('lastname')
+
         
         reservation = Reservation.objects.create(
             start_time=start_time,
@@ -47,7 +46,7 @@ def booking(request):
         }
         return render(request, 'content.html', context)
     else:
-        return render(request, 'find-tables.html')
+        return render(request, 'get_empty_tables.html')
         
 @csrf_exempt
 def view_available_tables(request):
