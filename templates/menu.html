@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block header %}
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Thực đơn</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center text-uppercase">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Menu</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    {% endblock %}
+</head>
+
+<body>
+    {% block content %}
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Menu Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Food Menu</h5>
+                    <h1 class="mb-5">Danh sách thực đơn</h1>
+                </div>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-5 pb-3 active" data-bs-toggle="pill"
+                                href="#foods">
+                                <i class="fa fa-hamburger fa-2x text-primary"></i>
+                                <div class="ps-3">
+                                    <small class="text-body">Chuẩn vị miền trung</small>
+                                    <h6 class="mt-n1 mb-0">Món ăn</h6>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-5 ms-5 pb-3" data-bs-toggle="pill"
+                                href="#drinks">
+                                <i class="fa fa-coffee fa-2x text-primary"></i>
+                                <div class="ps-3">
+                                    <small class="text-body">Thơm ngon từng giọt</small>
+                                    <h6 class="mt-n1 mb-0">Đồ uống</h6>
+                                </div>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                    <div class="tab-content">
+                        <div id="drinks" class="tab-pane fade show p-0">
+                            <div class="row g-4">
+                                {% for drink in drinks %}
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center">
+                                        <!-- <img class="flex-shrink-0 img-fluid rounded" src="{{ drink.image.url }}" alt="" style="width: 30%;"> -->
+                                        <img class="flex-shrink-0 img-fluid rounded" src="{{ drink.image.url }}" alt="" style="width: 40%; max-width: 40%; max-height: 100%; aspect-ratio: 1280 / 720;">
+
+                                        <div class="w-100 d-flex flex-column text-start ps-4">
+                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                <span>{{ drink.name }}</span>
+                                                <span class="text-primary">{{ drink.price }}₫</span>
+                                            </h5>
+                                            <small class="fst-italic">{{ drink.description }}</small>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="foods" class="tab-pane fade show p-0 active">
+                            <div class="row g-4">
+                                {% for food in foods %}
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center">
+                                        <!-- <img class="flex-shrink-0 img-fluid rounded" src="{{ food.image.url }}" alt="" style="width: 30%;"> -->
+                                        <img class="flex-shrink-0 img-fluid rounded" src="{{ food.image.url }}" alt="" style="width: 40%; max-width: 40%; max-height: 100%; aspect-ratio: 1280 / 720;">
+
+                                        <div class="w-100 d-flex flex-column text-start ps-4">
+                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                <span>{{ food.name }}</span>
+                                                <span class="text-primary">{{ food.price }}₫</span>
+                                            </h5>
+                                            <small class="fst-italic">{{ food.description }}</small>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Menu End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    {% endblock %}
+</body>
+
+</html>
