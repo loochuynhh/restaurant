@@ -71,3 +71,5 @@ class Account(AbstractBaseUser):
 
     def full_name(self):
         return self.first_name + " " + self.last_name
+    def get_comments(self):
+        return self.comment_set.all()

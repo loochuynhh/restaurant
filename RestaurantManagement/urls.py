@@ -27,5 +27,6 @@ urlpatterns = [
     path('menu/', include('menu.urls')),
     path('reservation/', include('reservation.urls')),
     path('about/', include('aboutUs.urls')),
+    path('forum/', include('comment.urls')),
     path('', views.home, name='home'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
