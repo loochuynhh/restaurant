@@ -22,6 +22,7 @@ from django.conf import settings
 from django.urls import include,path
 from . import views
 urlpatterns = [
+    path('dashboard/', include('admin_soft.urls')),
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('menu/', include('menu.urls')),

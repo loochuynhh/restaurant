@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+<head>
+    {% block header %}
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            {% if vnp_ResponseCode == '00' %}
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Thanh toán thành công</h1>
+            {% else %}
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Thanh toán thất bại</h1>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+</head>
+
+{% block content %}
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center">
+            <div class="panel-heading">{{ title }}: {{ result }}</div>
+            <div class="panel-body">
+                <p>Mã đơn hàng:{{ order_id }}</p>
+                <p>Giá:{{ amount }} VNĐ</p>
+                <p>Nội dung:{{ order_desc }}</p>
+                {% comment %} <p>vnp_TransactionNo:{{ vnp_TransactionNo }}</p> {% endcomment %}
+                {% comment %} {% if vnp_ResponseCode == '00' %}
+                    <p>Trạng thái: Thành công</p>
+                {% else %}
+                    <p>Trạng thái: Lỗi</p>
+                {% endif %} {% endcomment %}
+                {% if msg %}
+                    <p class="alert-warning"> {{ msg }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <form action="/">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-primary btn-sm py-2 px-4" type="submit">Về trang chủ</button>
+            </div>                    
+        </form>
+    </div>
+</div>
+{% endblock %}

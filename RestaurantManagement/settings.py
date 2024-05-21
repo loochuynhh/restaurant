@@ -33,15 +33,16 @@ SECRET_KEY = 'django-insecure-$9qm$lw(nhlld@8g9dpetg(whigprc%9+8ebpqxcnggn66sd=e
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_URL = 'account:login'
 
-# Application definition
-
 INSTALLED_APPS = [
-    'material',
-    'material.admin',
-    # 'django.contrib.admin',
+    # 'material',
+    # 'material.admin',
+    # 'adminlteui',
+    'admin_soft.apps.AdminSoftDashboardConfig', 
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -155,3 +156,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = True
+
+VNPAY_RETURN_URL = 'http://localhost:8000/reservation/booking/payment_return'  # get from config
+VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'  # get from config
+VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+VNPAY_TMN_CODE = 'WH059BRA'  # Website ID in VNPAY System, get from config
+VNPAY_HASH_SECRET_KEY = 'J6UIO044MLFFYZAWX66KUB2X7BYF0X4M'  # Secret key for create checksum,get from config

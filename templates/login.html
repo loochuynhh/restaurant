@@ -3,46 +3,66 @@
 
 <head>
     {% block header %}
-        <div class="container-xxl py-5 bg-dark hero-header mb-5">
-            <div class="container text-center my-5 pt-5 pb-4">
-                <h1 class="display-3 text-white mb-3 animated slideInDown">Đăng nhập</h1>
-            </div>
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đăng nhập</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center text-uppercase">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Login</li>
+                </ol>
+            </nav>
         </div>
-        {% endblock %}
+    </div>
+    {% endblock %}
 </head>
 
 <body>
     {% block content %}
-    <!-- ========================= SECTION CONTENT ========================= -->
-    <section class="section-conten padding-y" style="min-height:84vh">
-        <!-- ============================ COMPONENT LOGIN   ================================= -->
-        <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
-            {% include "includes/alerts.html" %}
-            <div class="card-body">
-                <h4 class="card-title mb-4">Đăng nhập</h4>
-                <form action="/account/login/" method="POST">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="email" class="form-control" placeholder="Email"
-                            name="email" value="{{ email }}">
-                    </div> <!-- form-group// -->
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password"
-                            name="password" value="{{ password }}">
-                    </div> <!-- form-group// -->
-                    {% comment %} <div class="form-group">
-                        <a href="{% url 'forgotPassword' %}" class="float-right">Forgot password?</a> {% endcomment %}
-                    </div> <!-- form-group form-check .// -->
-                    <div class="form-group d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary btn-block"> Đăng nhập </button>
-                    </div> <!-- form-group// -->
-                </form>
-            </div> <!-- card-body.// -->
-        </div> <!-- card .// -->
-        <p class="text-center mt-4">Chưa có tài khoản? <a href="/account/register/">Đăng ký</a></p>
-        <br><br>
-        <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
-    </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
+    <div class="container-xxl py-5">
+            <section class="section-conten padding-y" style="background-color: #fff;">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-lg" style="background-color: #fff; border-radius: 10px;">
+                                {% include "includes/alerts.html" %}
+                                <div class="card-body p-5">
+                                    <h4 class="card-title mb-4 text-center" style="color: #ffa500;">Đăng nhập!</h4>
+                                    <form action="/account/login/" method="POST">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-0"><i
+                                                        class="fas fa-user text-primary"></i></span>
+                                                <input type="email" class="form-control border-0" placeholder="Email"
+                                                    name="email" value="{{ email }}"
+                                                    style="background-color: #f7f7f7; height: 50px;">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-0"><i
+                                                        class="fas fa-lock text-primary"></i></span>
+                                                <input type="password" class="form-control border-0"
+                                                    placeholder="Mật khẩu" name="password" value="{{ password }}"
+                                                    style="background-color: #f7f7f7; height: 50px;">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 text-center">
+                                            <button type="submit" class="btn btn-primary btn-block"
+                                                style="background-color: #ffa500; border: none;"> Đăng nhập </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <p class="text-center mt-4">Bạn không có tài khoản? <a
+                                    href="/account/register/" style="color: #ffa500;">Đăng ký</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    </div>
+
     {% endblock %}
 </body>
