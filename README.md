@@ -1,2 +1,0 @@
-# restaurant
-django website
