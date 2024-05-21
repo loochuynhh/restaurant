@@ -3,6 +3,7 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
     {% block header %}
     <title>Reservations</title>
@@ -11,16 +12,23 @@
             width: 100%;
             border-collapse: collapse;
         }
-        table, th, td {
+
+        table,
+        th,
+        td {
             border: 2px solid black;
         }
-        th, td {
+
+        th,
+        td {
             padding: 15px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .center-table {
             margin-left: auto;
             margin-right: auto;
@@ -33,64 +41,72 @@
         }
     </script>
     <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đơn hàng</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center text-uppercase">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Order</li>
+                </ol>
+            </nav>
+        </div>
     </div>
     {% endblock %}
 </head>
+
 <body>
     {% block content %}
-    <h1 class="text-center">Đơn của tôi</h1>
-    <form class="text-center" id="view-form" method="get" action="/reservation/my_reservations/">
-        <input type="hidden" name="view" value="{{ current_view }}">
-        <button type="submit" class="btn btn-primary btn-sm py-2 px-4" onclick="toggleView('all')">Tất cả</button>
-        <button type="submit" class="btn btn-primary btn-sm py-2 px-4" onclick="toggleView('not_done')">Sắp tới</button>
-    </form>
-    <p></p>
-    {% with total=reservations.count %}
-        <p class="text-center" >Tổng số: {{ total }}</p>
-    {% endwith %}
-    <div class="text-center">
-        <table class="text-center" style="margin-left:auto; margin-right:auto;">
-            <thead>
-                <tr>
-                    <th>Bắt đầu</th>
-                    <th>Kết thúc</th>
-                    <th>Số người</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reservation in reservations %}
+    <div class="container">
+        <h1 class="text-center">Đơn của tôi</h1>
+        <form class="text-center" id="view-form" method="get" action="/reservation/my_reservations/">
+            <input type="hidden" name="view" value="{{ current_view }}">
+            <button type="submit" class="btn btn-primary btn-sm py-2 px-4" onclick="toggleView('all')">Tất cả</button>
+            <button type="submit" class="btn btn-primary btn-sm py-2 px-4" onclick="toggleView('not_done')">Sắp
+                tới</button>
+        </form>
+        <p></p>
+        {% with total=reservations.count %}
+        <p class="text-center">Tổng số: {{ total }}</p>
+        {% endwith %}
+        <div class="text-center">
+            <table class="text-center" style="margin-left:auto; margin-right:auto;">
+                <thead>
+                    <tr>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Số người</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
                     <tr>
                         <td>{{ reservation.start_time }}</td>
                         <td>{{ reservation.end_time }}</td>
                         <td>{{ reservation.people_count }}</td>
                         <td>
-                            {% if reservation.end_time < now %}
-                                Đã xong
-                            {% elif reservation.is_activated %}
-                                Đã thanh toán
-                            {% elif reservation.creation_time < now|date:"Y-m-d H:i:s"|add:"-1 hour" %}
-                                Hủy
-                            {% else %}
-                                Chưa thanh toán
-                            {% endif %}
-                        </td>
+                            {% if reservation.end_time < now %} Đã xong {% elif reservation.is_activated %} Đã thanh
+                                toán {% elif reservation.creation_time < now|date:"Y-m-d H:i:s"|add:"-1 hour" %} Hủy {%
+                                else %} Chưa thanh toán {% endif %} </td>
                     </tr>
-                {% empty %}
+                    {% empty %}
                     <tr>
                         <td colspan="4">No reservations found.</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p></p>
+        <form action="/">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-primary btn-sm py-2 px-4" type="submit">Về trang chủ</button>
+            </div>
+        </form>
     </div>
-    <p></p>
-    <form action="/">
-        {% csrf_token %}
-        <div class="d-flex justify-content-center">
-            <button class="btn btn-primary btn-sm py-2 px-4" type="submit">Về trang chủ</button>
-        </div>                    
-    </form>
     {% endblock %}
 </body>
+
 </html>

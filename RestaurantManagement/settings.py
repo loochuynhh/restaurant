@@ -40,12 +40,7 @@ LOGIN_URL = 'account:login'
 INSTALLED_APPS = [
     # 'material',
     # 'material.admin',
-
     # 'adminlteui',
-    # 'fluent_dashboard',
-    # 'suit',
-    # 'jet',
-    # 'jet.dashboard',
     'admin_soft.apps.AdminSoftDashboardConfig', 
     'django.contrib.admin',
     'django.contrib.auth',
