@@ -66,6 +66,9 @@
                     <a href="{% url 'menu' %}" class="nav-item nav-link">Thực đơn</a>
                     <a href="/reservation/find-tables/" class="nav-item nav-link">Đặt bàn</a>
                     <a href="{% url 'forum' %}" class="nav-item nav-link">Diễn đàn</a>
+                        {% if user.is_authenticated %}
+                            <a href="/reservation/my_reservations/" class="nav-item nav-link">Lịch sử</a>
+                        {% endif %}
                 </div>
                 {% if user.is_authenticated %}
                 <span class="navbar-text me-2">{{ user.first_name }} {{ user.last_name }}</span>
