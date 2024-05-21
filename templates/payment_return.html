@@ -24,11 +24,11 @@
                 <p>Giá:{{ amount }} VNĐ</p>
                 <p>Nội dung:{{ order_desc }}</p>
                 {% comment %} <p>vnp_TransactionNo:{{ vnp_TransactionNo }}</p> {% endcomment %}
-                {% if vnp_ResponseCode == '00' %}
+                {% comment %} {% if vnp_ResponseCode == '00' %}
                     <p>Trạng thái: Thành công</p>
                 {% else %}
                     <p>Trạng thái: Lỗi</p>
-                {% endif %}
+                {% endif %} {% endcomment %}
                 {% if msg %}
                     <p class="alert-warning"> {{ msg }}</p>
                 {% endif %}

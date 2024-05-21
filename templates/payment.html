@@ -12,11 +12,11 @@
 
 {% block content %}
 
-    <h3>{{ title }}</h3>
+    <h3 class="text-center">{{ title }}</h3>
     <div class="table-responsive">
         <form action="{{ reservation_id }}" id="create_form" method="post">
             <div class="form-group">
-                <label for="language">Loại hàng hóa </label>
+                <label for="language" readonly>Loại hàng hóa </label>
                 <select name="order_type" id="order_type" class="form-control">
                     <option value="topup">Nạp tiền điện thoại</option>
                     <option selected value="billpayment">Thanh toán hóa đơn</option>
@@ -73,8 +73,9 @@
                     <option value="en">English</option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-primary btn-sm py-2 px-4">Chuyển hướng thanh toán</button>
+            <div class="justify-content-center text-center">
+                <button type="submit" class="btn btn-primary btn-sm py-2 px-4">Chuyển hướng thanh toán</button>
+            </div>
             {% csrf_token %}
             <div class="form-group"></div>
         </form>

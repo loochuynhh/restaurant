@@ -20,3 +20,4 @@ class Payment(models.Model):
     bank_code = models.CharField(max_length=100)
     language = models.CharField(max_length=50)
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    status = models.CharField(max_length=100, default='pending')
