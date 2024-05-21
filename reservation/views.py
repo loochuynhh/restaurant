@@ -21,7 +21,7 @@ from reservation.form import PaymentForm
 
 # Create your views here.
 DURATION = 2
-HOUR_EXPIRED = 2
+HOUR_EXPIRED = 1
 date_format = '%m/%d/%Y %I:%M %p'
 
 @login_required(login_url="login")
@@ -45,12 +45,6 @@ def booking(request):
             table_id=id_table,
             is_activated = False
         )
-        
-        # context = {
-        #     'title': 'Đặt thành công',
-        #     'content': 'Vui lòng thanh toán để kích hoạt!'
-        # }
-        # return render(request, 'content.html', context)
         return redirect('payment/' + str(reservation.id))
         
     else:
@@ -83,7 +77,16 @@ def view_available_tables(request):
         return render(request, 'get_empty_tables.html')
     
 def payment(request, reservation_id):
+    reservation = Reservation.objects.get(pk=reservation_id)
 
+    now = timezone.now()
+
+    if reservation.creation_time > now + timedelta(hours=HOUR_EXPIRED):
+        context =  {
+            "title": "Lỗi",
+            "content" : "Đơn đã quá giới hạn để thanh toán"
+        }
+        return render(request, 'content.html', context)
     if request.method == 'POST':
         # Process input data and build url payment
         form = PaymentForm(request.POST)
@@ -105,10 +108,6 @@ def payment(request, reservation_id):
                 language=language,
                 reservation_id=reservation_id
             )
-            
-            # reservation = Reservation.objects.get(pk=reservation_id)
-            # reservation.is_activated = True
-            # reservation.save()
             
             # Build URL Payment
             vnp = vnpay()
@@ -135,7 +134,6 @@ def payment(request, reservation_id):
             vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
             print(vnpay_payment_url)
             return redirect(vnpay_payment_url)
-            #return redirect(vnpay_payment_url)
         else:
             print("Form input not validate")
     else:
@@ -165,6 +163,8 @@ def payment_return(request):
             if vnp_ResponseCode == "00":
                 reservation.is_activated = True
                 reservation.save()
+                payment.status = 'success'
+                payment.save()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Thành công", "order_id": order_id,
                                                                "amount": amount,
@@ -172,6 +172,8 @@ def payment_return(request):
                                                                "vnp_TransactionNo": vnp_TransactionNo,
                                                                "vnp_ResponseCode": vnp_ResponseCode})
             else:
+                payment.status = 'error'
+                payment.save()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Lỗi", "order_id": order_id,
                                                                "amount": amount,
@@ -187,9 +189,12 @@ def payment_return(request):
         return render(request, "payment_return.html", {"title": "Kết quả thanh toán", "result": ""})
         
 def get_available_tables(start_time, end_time, people_count): 
+    now = timezone.now()
     conflicting_reservations = Reservation.objects.filter(
         Q(start_time__lt=end_time) &
         Q(end_time__gt=start_time)
+    ).exclude(
+        creation_time__gt=now + timedelta(hours=1)
     ).values_list('table_id', flat=True)
     
     available_tables = Table.objects.exclude(id__in=conflicting_reservations).filter(capacity__gte=people_count)
