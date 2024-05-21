@@ -32,26 +32,36 @@
                     <h1 class="mb-5">Bàn có sẵn</h1>
                 </div>
                 <div class="row g-4">
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    {% for available_table in available_tables %}
+                    <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="service-item rounded pt-3">
-                            {% for available_table in available_tables %}
-                                <div class="p-4">
-                                    <i class="fa fa-3x fa-solid fa-utensils text-primary mb-4"></i>
-                                    <h5>{{ available_table.name }}</h5>
-                                    <form action="/reservation/booking/" method="POST">
-                                        {% csrf_token %}
-                                        <input type="text" value="{{ start_time }}" id="starttime" name="starttime" hidden>
-                                        <input type="text" value="{{people_count}}" id="people_count" name="people_count" hidden>
-                                        <input type="text" value="{{ available_table.id }}" id="tableid" name="tableid" hidden>
-                                        <button class="btn btn-primary w-100 py-3" type="submit">Đặt</button>
-                                    </form>
+                            <div class="p-4">
+                                <i class="fa fa-3x fa-solid fa-utensils text-primary mb-4"></i>
+                                <div class="p-4 d-flex justify-content-between">
+                                    <div>
+                                        <h5>{{ available_table.name }}</h5>
+                                    </div>
+                                    <div>
+                                        <span class="text-primary">Sức chứa: {{ available_table.capacity }}</span>
+                                    </div>
                                 </div>
-                            {% empty %}
-                                <li>Không tìm thấy</li>
-                            {% endfor %}
+                                <form action="/reservation/booking/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" value="{{ start_time }}" id="starttime" name="starttime" hidden>
+                                    <input type="text" value="{{ people_count }}" id="people_count" name="people_count" hidden>
+                                    <input type="text" value="{{ available_table.id }}" id="tableid" name="tableid" hidden>
+                                    <button class="btn btn-primary w-100 py-3" type="submit">Đặt</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <li>Không tìm thấy</li>
+                    </div>
+                    {% endfor %}
                 </div>
+                
             </div>
         </div>
         <!-- Service End -->

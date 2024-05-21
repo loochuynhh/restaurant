@@ -10,3 +10,4 @@ def about(request):
         'abouts': abouts,
     }
     return render(request, 'about.html', context)
+

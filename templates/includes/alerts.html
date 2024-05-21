@@ -16,3 +16,27 @@
     </div>
 </div>
 {% endif %}
+
+
+<!-- {% load static %}
+
+{% if messages %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="messages">
+                {% for message in messages %}
+                {% if forloop.first %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS_ERROR %}
+                    <strong>Error:</strong>
+                    {% endif %}
+                    {{ message }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %} -->

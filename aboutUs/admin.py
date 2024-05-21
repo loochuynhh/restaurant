@@ -10,7 +10,7 @@ class AboutUsAdmin(admin.ModelAdmin):
         return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
 
     image_tag.short_description = 'Review'
-    list_display = ['name', 'description', 'datetime', 'image_tag','type']
+    list_display = ['name', 'datetime', 'image_tag','type', 'description']
     readonly_fields = ['image_tag']
     
 admin.site.register(AboutUs, AboutUsAdmin)

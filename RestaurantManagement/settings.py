@@ -33,15 +33,21 @@ SECRET_KEY = 'django-insecure-$9qm$lw(nhlld@8g9dpetg(whigprc%9+8ebpqxcnggn66sd=e
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_URL = 'account:login'
 
-# Application definition
-
 INSTALLED_APPS = [
-    'material',
-    'material.admin',
-    # 'django.contrib.admin',
+    # 'material',
+    # 'material.admin',
+
+    # 'adminlteui',
+    # 'fluent_dashboard',
+    # 'suit',
+    # 'jet',
+    # 'jet.dashboard',
+    'admin_soft.apps.AdminSoftDashboardConfig', 
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

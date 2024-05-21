@@ -77,7 +77,7 @@ def login(request):
                     next_page = params["next"]
                     return redirect(next_page)
             except Exception:
-                return redirect('menu')
+                return redirect('home')
         else:
             messages.error(request=request, message="Đăng nhập thất bại!")
     context = {
