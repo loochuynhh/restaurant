@@ -25,6 +25,24 @@ HOUR_EXPIRED = 1
 date_format = '%m/%d/%Y %I:%M %p'
 
 @login_required(login_url="login")
+def get_reservation(request):
+    user_id = request.user.id
+    now = timezone.now()
+    view = request.GET.get('view', 'all')
+
+    if view == 'not_done':
+        reservations = Reservation.objects.filter(user_id=user_id).exclude(end_time__lt=now)
+    else:
+        reservations = Reservation.objects.filter(user_id=user_id)
+
+    context = {
+        'reservations': reservations,
+        'now': now,
+        'current_view': view,
+    }
+    return render(request, 'my_reservations.html', context)
+
+@login_required(login_url="login")
 @csrf_exempt
 def booking(request):
     if request.method == "POST":
