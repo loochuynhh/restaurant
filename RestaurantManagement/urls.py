@@ -29,5 +29,6 @@ urlpatterns = [
     path('reservation/', include('reservation.urls')),
     path('about/', include('aboutUs.urls')),
     path('forum/', include('comment.urls')),
+    path('order/', include('order.urls'), name='order'),
     path('', views.home, name='home'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

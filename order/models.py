@@ -6,3 +6,4 @@ from reservation.models import Reservation
 class Order(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)

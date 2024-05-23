@@ -1,10 +1,13 @@
 from django.contrib import admin
+from .models import Order
 
-# Register your models here.
-from order.models import Order
-
-# Register your models here.
 class OrderAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Order._meta.fields]
+    list_display = ['id', 'menu_name', 'reservation', 'quantity']
+    readonly_fields = ['menu', 'reservation', 'quantity']
+    def menu_name(self, obj):
+        return obj.menu.name
     
+    # Đặt tên cho cột hiển thị của trường 'menu_name'
+    menu_name.short_description = 'Menu Name'
+
 admin.site.register(Order, OrderAdmin)

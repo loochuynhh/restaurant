@@ -14,7 +14,7 @@
 <div class="container">
     <h3 class="text-center">{{ title }}</h3>
     <div class="table-responsive">
-        <form action="{{ reservation_id }}" id="create_form" method="post">
+        <form id="create_form" method="post">
             <div class="form-group">
                 <label for="language" readonly>Loại hàng hóa </label>
                 <select name="order_type" id="order_type" class="form-control">
@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label for="amount">Số tiền</label>
-                <input class="form-control" id="amount" name="amount" type="number" value="50000" readonly />
+                <input class="form-control" id="amount" name="amount" type="number" value="{{total_price}}" readonly />
             </div>
             <div class="form-group">
                 <label for="order_desc">Nội dung thanh toán</label>
@@ -73,7 +73,7 @@
                     <option value="en">English</option>
                 </select>
             </div>
-            <div class="justify-content-center text-center">
+            <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary btn-sm py-2 px-4">Chuyển hướng thanh toán</button>
             </div>
             {% csrf_token %}

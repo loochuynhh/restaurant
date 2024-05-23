@@ -45,7 +45,7 @@
                                         <span class="text-primary">Sức chứa: {{ available_table.capacity }}</span>
                                     </div>
                                 </div>
-                                <form action="/reservation/booking/" method="POST">
+                                <form action="{% url 'order' %}" method="POST">
                                     {% csrf_token %}
                                     <input type="text" value="{{ start_time }}" id="starttime" name="starttime" hidden>
                                     <input type="text" value="{{ people_count }}" id="people_count" name="people_count" hidden>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Chi tiết đặt bàn</h2>
+        <table>
+            <tr>
+                <th>Từ lúc</th>
+                <td>{{ reservation.start_time }}</td>
+            </tr>
+            <tr>
+                <th>Đến lúc</th>
+                <td>{{ reservation.end_time }}</td>
+            </tr>
+            <tr>
+                <th>Số người</th>
+                <td>{{ reservation.people_count }}</td>
+            </tr>
+            <tr>
+                <th>Bàn số</th>
+                <td>{{ table.name }}</td>
+            </tr>
+            <tr>
+                <th>Tổng thanh toán</th>
+                <td>{{ reservation.total_price }}</td>
+            </tr>
+            <tr>
+                <th>Tên khách hàng</th>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Số điện thoại</th>
+                <td>{{ user.phone_number }}</td>
+            </tr>
+            <tr>
+                <th colspan="2">Danh sách món ăn đặt trước</th>
+            </tr>
+            {% for order in ordered_menus %}
+            <tr>
+                <td>{{ order.menu.name }}</td>
+                <td>{{ order.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>Cảm ơn bạn đã lựa chọn chúng tôi. Thông tin đặt bàn của bạn đã được cung cấp ở trên. Nếu bạn có bất kỳ câu hỏi nào hoặc cần hỗ trợ thêm, vui lòng liên hệ với chúng tôi.</p>
+
+        <p>Trân trọng,</p>
+        <p>LH Restaurant</p>
+        <p>SĐT: 0342063067</p>
+    </div>
+</body>
+</html>

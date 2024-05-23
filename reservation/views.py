@@ -7,66 +7,52 @@ from table.models import Table
 from django.db.models import Q
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-from django.contrib import messages, auth
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-
 from reservation.vnpay import vnpay
 from reservation.form import PaymentForm
-
+from order.models import Order
+from menu.models import Menu
+from django.utils.timezone import make_aware
 # Create your views here.
 DURATION = 2
 HOUR_EXPIRED = 1
 date_format = '%m/%d/%Y %I:%M %p'
 
 @login_required(login_url="login")
+@csrf_exempt
 def get_reservation(request):
     user_id = request.user.id
     now = timezone.now()
     view = request.GET.get('view', 'all')
 
     if view == 'not_done':
-        reservations = Reservation.objects.filter(user_id=user_id).exclude(end_time__lt=now)
+        reservations = Reservation.objects.filter(user_id=user_id).exclude(end_time__lt=now).select_related('table')
     else:
-        reservations = Reservation.objects.filter(user_id=user_id)
+        reservations = Reservation.objects.filter(user_id=user_id).select_related('table')
+
+    reservations_with_table_name = []
+    for reservation in reservations:
+        reservation_with_table_name = {
+            'start_time': reservation.start_time,
+            'end_time': reservation.end_time,
+            'people_count': reservation.people_count,
+            'table_name': reservation.table.name,
+            'total_price': reservation.total_price,
+            'is_activated': reservation.is_activated
+        }
+        reservations_with_table_name.append(reservation_with_table_name)
 
     context = {
-        'reservations': reservations,
+        'reservations': reservations_with_table_name,
         'now': now,
         'current_view': view,
     }
     return render(request, 'my_reservations.html', context)
 
-@login_required(login_url="login")
-@csrf_exempt
-def booking(request):
-    if request.method == "POST":
-        user_id = request.user.id
-        id_table = request.POST.get('tableid')
-        start_time_str = request.POST.get('starttime')
-        people_count = int(request.POST.get('people_count', 0))
-        print(start_time_str)
-        start_time = datetime.strptime(start_time_str, date_format)
-        end_time = start_time + timedelta(hours=DURATION)
-
-        
-        reservation = Reservation.objects.create(
-            start_time=start_time,
-            end_time=end_time,
-            people_count=people_count,
-            user_id = user_id,
-            table_id=id_table,
-            is_activated = False
-        )
-        return redirect('payment/' + str(reservation.id))
-        
-    else:
-        return render(request, 'get_empty_tables.html')
         
 @csrf_exempt
 def view_available_tables(request):
@@ -94,19 +80,62 @@ def view_available_tables(request):
     else:
         return render(request, 'get_empty_tables.html')
     
-def payment(request, reservation_id):
-    reservation = Reservation.objects.get(pk=reservation_id)
+    
+    
+@login_required(login_url="login")
+@csrf_exempt
+def payment(request):
+    order_data = request.session.get('order_data', {})
+    
+    if not order_data:
+        # Handle case where order_data is not in session
+        return render(request, 'error.html', {"message": "No order data found in session"})
+    
+    start_time_str = order_data.get('start_time')
+    end_time_str = order_data.get('end_time')
+    total_price = order_data.get('total_money')
+
+    date_format = '%m/%d/%Y %I:%M %p'
+    start_time = make_aware(datetime.strptime(start_time_str, date_format))
+    end_time = make_aware(datetime.strptime(end_time_str, date_format))
+
+    # Check if reservation already exists
+    reservation, created = Reservation.objects.get_or_create(
+        start_time=start_time,
+        end_time=end_time,
+        people_count=order_data.get('people_count'),
+        user_id=order_data.get('user_id'),
+        table_id=order_data.get('id_table'),
+        defaults={'total_price': total_price, 'is_activated': False}
+    )
+    
+    if created:
+        inputItem = order_data.get('inputItem', {})
+
+        for item_name, details in inputItem.items():
+            price = details['price']
+            quantity = details['quantity']
+
+            try:
+                menu_item = Menu.objects.get(name=item_name)
+                Order.objects.create(
+                    menu=menu_item,
+                    reservation=reservation,  
+                    quantity=quantity
+                )
+            except Menu.DoesNotExist:
+                print(f"Menu item '{item_name}' does not exist.")
+                continue
 
     now = timezone.now()
-
     if reservation.creation_time > now + timedelta(hours=HOUR_EXPIRED):
-        context =  {
+        context = {
             "title": "Lỗi",
-            "content" : "Đơn đã quá giới hạn để thanh toán"
+            "content": "Đơn đã quá giới hạn để thanh toán"
         }
         return render(request, 'content.html', context)
+
     if request.method == 'POST':
-        # Process input data and build url payment
         form = PaymentForm(request.POST)
         if form.is_valid():
             order_type = "billpayment"
@@ -116,77 +145,105 @@ def payment(request, reservation_id):
             bank_code = form.cleaned_data['bank_code']
             language = form.cleaned_data['language']
             ipaddr = get_client_ip(request)
-            
-            payment = Payment.objects.create(
-                order_id=order_id,
-                order_type=order_type,
-                amount=amount,
-                order_desc = order_desc,
-                bank_code=bank_code,
-                language=language,
-                reservation_id=reservation_id
-            )
-            
-            # Build URL Payment
-            vnp = vnpay()
-            vnp.requestData['vnp_Version'] = '2.1.0'
-            vnp.requestData['vnp_Command'] = 'pay'
-            vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
-            vnp.requestData['vnp_Amount'] = amount * 100
-            vnp.requestData['vnp_CurrCode'] = 'VND'
-            vnp.requestData['vnp_TxnRef'] = order_id
-            vnp.requestData['vnp_OrderInfo'] = order_desc
-            vnp.requestData['vnp_OrderType'] = order_type
-            # Check language, default: vn
-            if language and language != '':
-                vnp.requestData['vnp_Locale'] = language
-            else:
-                vnp.requestData['vnp_Locale'] = 'vn'
-                # Check bank_code, if bank_code is empty, customer will be selected bank on VNPAY
-            if bank_code and bank_code != "":
-                vnp.requestData['vnp_BankCode'] = bank_code
 
-            vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
-            vnp.requestData['vnp_IpAddr'] = ipaddr
-            vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
-            vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
-            print(vnpay_payment_url)
-            return redirect(vnpay_payment_url)
+            # Check if payment already exists
+            payment, payment_created = Payment.objects.get_or_create(
+                order_id=order_id,
+                defaults={
+                    'order_type': order_type,
+                    'amount': amount,
+                    'order_desc': order_desc,
+                    'bank_code': bank_code,
+                    'language': language,
+                    'reservation': reservation
+                }
+            )
+
+            if payment_created:
+                vnp = vnpay()
+                vnp.requestData['vnp_Version'] = '2.1.0'
+                vnp.requestData['vnp_Command'] = 'pay'
+                vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
+                vnp.requestData['vnp_Amount'] = amount * 100
+                vnp.requestData['vnp_CurrCode'] = 'VND'
+                vnp.requestData['vnp_TxnRef'] = order_id
+                vnp.requestData['vnp_OrderInfo'] = order_desc
+                vnp.requestData['vnp_OrderType'] = order_type
+                vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')
+                vnp.requestData['vnp_IpAddr'] = ipaddr
+                vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
+
+                if language and language != '':
+                    vnp.requestData['vnp_Locale'] = language
+                else:
+                    vnp.requestData['vnp_Locale'] = 'vn'
+                
+                if bank_code and bank_code != "":
+                    vnp.requestData['vnp_BankCode'] = bank_code
+
+                vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
+                return redirect(vnpay_payment_url)
+            else:
+                print("Payment already exists")
+                return redirect('error_page')
         else:
-            print("Form input not validate")
+            print("Form input not valid")
     else:
-        context =  {
+        context = {
             "title": "Thanh toán",
-            "reservation_id" : reservation_id
+            "reservation_id": reservation.id,
+            "total_price": total_price
         }
         return render(request, "payment.html", context=context)
-    
+
+
+
 def payment_return(request):
     inputData = request.GET
     if inputData:
         vnp = vnpay()
         vnp.responseData = inputData.dict()
-        order_id = inputData['vnp_TxnRef']
-        amount = int(inputData['vnp_Amount']) / 100
-        order_desc = inputData['vnp_OrderInfo']
-        vnp_TransactionNo = inputData['vnp_TransactionNo']
-        vnp_ResponseCode = inputData['vnp_ResponseCode']
-        vnp_TmnCode = inputData['vnp_TmnCode']
-        vnp_PayDate = inputData['vnp_PayDate']
-        vnp_BankCode = inputData['vnp_BankCode']
-        vnp_CardType = inputData['vnp_CardType']
-        payment = Payment.objects.get(order_id=order_id)
+        order_id = inputData.get('vnp_TxnRef')
+        amount = int(inputData.get('vnp_Amount')) / 100
+        order_desc = inputData.get('vnp_OrderInfo')
+        vnp_TransactionNo = inputData.get('vnp_TransactionNo')
+        vnp_ResponseCode = inputData.get('vnp_ResponseCode')
+        vnp_TmnCode = inputData.get('vnp_TmnCode')
+        vnp_PayDate = inputData.get('vnp_PayDate')
+        vnp_BankCode = inputData.get('vnp_BankCode')
+        vnp_CardType = inputData.get('vnp_CardType')
+
+        try:
+            payment = Payment.objects.get(order_id=order_id)
+        except Payment.DoesNotExist:
+            # Handle case where payment does not exist
+            return render(request, "payment_return.html", {"title": "Kết quả thanh toán", "result": "Lỗi", "msg": "Thanh toán không tồn tại."})
+
         reservation = payment.reservation
+
         if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
             if vnp_ResponseCode == "00":
-                reservation.is_activated = True
-                reservation.save()
+                if not reservation.is_activated:  # Only activate if not already activated
+                    reservation.is_activated = True
+                    reservation.save()
+                
                 payment.status = 'success'
                 payment.save()
+
+                current_site = get_current_site(request=request)
+                mail_subject = 'Xác nhận thanh toán thành công'
+                message = render_to_string('reservation_email.html', {
+                    'user': reservation.user,
+                    'table': reservation.table,
+                    'reservation': reservation,
+                    'ordered_menus': reservation.order_set.all()
+                })
+                send_email = EmailMessage(mail_subject, message, to=[reservation.user.email])
+                send_email.content_subtype = 'html'  # Đặt kiểu nội dung thành HTML
+                send_email.send()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Thành công", "order_id": order_id,
-                                                               "amount": amount,
-                                                               "order_desc": order_desc,
+                                                               "amount": amount, "order_desc": order_desc,
                                                                "vnp_TransactionNo": vnp_TransactionNo,
                                                                "vnp_ResponseCode": vnp_ResponseCode})
             else:
@@ -194,8 +251,7 @@ def payment_return(request):
                 payment.save()
                 return render(request, "payment_return.html", {"title": "Kết quả thanh toán",
                                                                "result": "Lỗi", "order_id": order_id,
-                                                               "amount": amount,
-                                                               "order_desc": order_desc,
+                                                               "amount": amount, "order_desc": order_desc,
                                                                "vnp_TransactionNo": vnp_TransactionNo,
                                                                "vnp_ResponseCode": vnp_ResponseCode})
         else:
@@ -205,6 +261,8 @@ def payment_return(request):
                            "vnp_ResponseCode": vnp_ResponseCode, "msg": "Sai checksum"})
     else:
         return render(request, "payment_return.html", {"title": "Kết quả thanh toán", "result": ""})
+
+
         
 def get_available_tables(start_time, end_time, people_count): 
     now = timezone.now()

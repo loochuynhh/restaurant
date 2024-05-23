@@ -247,10 +247,9 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Special Request" id="message"
-                                            style="height: 100px"></textarea>
-                                        <label for="message">Yêu cầu phụ</label>
+                                    <div class="alert alert-warning" role="alert">
+                                        <h5 class="alert-heading">Chú ý:</h5>
+                                        <p class="mb-0">Vui lòng cung cấp thời gian và số lượng người để chúng tôi tìm kiếm bàn phù hợp với bạn. Mặc định bàn sẽ đặt trong 2 giờ. Bạn cũng có thể chọn đặt trước món nếu muốn!</p>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -282,100 +281,9 @@
         </div>
         <!-- Reservation End -->
 
-
-        <!-- Contact Start -->
-
-        <!-- <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-            <div class="container">
-                <div class="text-center">
-                    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Forum</h5>
-                    <h1 class="mb-5">Diễn đàn!!!</h1>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="text-center">
-                            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Bình luận</h5>
-                        </div>
-                        <div class="fb-comments" data-href="http://127.0.0.1:8000/" data-width="" data-numposts="8">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="text-center">
-                            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Nhận xét từ khách
-                                hàng</h5>
-                        </div>
-                        <form id="commentForm" method="post" action="{% url 'post_comment' %}">
-                            {% csrf_token %}
-                            <div class="row g-4">
-                                <div class="col-12">
-                                    <div class="form-floating">
-                                        <textarea name="content" class="form-control" placeholder="Bình luận của bạn"
-                                            id="message" style="height: 100px"></textarea>
-                                        <label for="message">Nhận xét của bạn</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-primary w-100 py-3" type="submit">Đăng nhận xét</button>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="container mt-3">
-                            <div id="comments">
-                                {% for comment in comments %}
-                                <div class="d-flex align-items-center mt-2">
-                                    <div class="w-100 d-flex flex-column border-bottom text-start ps-4">
-                                        <h5 class="d-flex justify-content-between">
-                                            <p>{{ comment.content }}</p>
-                                        </h5>
-                                        <div class="d-flex align-items-center">
-                                            <span class="me-2">{{ 'Nhận xét bởi: ' }}</span>
-                                            <span class="font-italic">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
-                                            <span class="ms-auto text-primary small">{{ comment.created_at }}</span>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Contact End -->
-
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-    <!-- <script>
-        $(document).ready(function () {
-            $('#commentForm').on('submit', function (event) {
-                event.preventDefault(); // Ngăn chặn hành vi submit mặc định
-
-                $.ajax({
-                    url: $(this).attr('action'), // URL lấy từ thuộc tính action của form
-                    method: 'POST',
-                    data: $(this).serialize(), // Lấy toàn bộ dữ liệu từ form
-                    success: function (response) {
-                        if (response.status === 'success') {
-                            // Thêm bình luận mới vào danh sách bình luận
-                            $('#comments').prepend(
-                                '<div><p>' + response.comment + '</p><p><small>by ' + response.user + ' on ' + response.created_at + '</small></p></div>'
-                            );
-                            $('#commentForm')[0].reset(); // Reset form
-                        } else {
-                            alert('Error: ' + JSON.stringify(response.errors));
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.log("An error occurred: " + error);
-                    }
-                });
-            });
-        });
-    </script> -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
