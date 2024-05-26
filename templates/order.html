@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block header %}
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Đặt Món</h1>
+        </div>
+    </div>
+    {% endblock %}
+
+</head>
+
+<body>
+    {% block content %}
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Menu Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Food Menu</h5>
+                    <h1 class="mb-5">Danh sách thực đơn</h1>
+                </div>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-5 pb-3 active" data-toggle="pill"
+                                href="#foods">
+                                <i class="fa fa-hamburger fa-2x text-primary"></i>
+                                <div class="ps-3">
+                                    <small class="text-body">Chuẩn vị miền trung</small>
+                                    <h6 class="mt-n1 mb-0">Món ăn</h6>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-5 ms-5 pb-3" data-toggle="pill"
+                                href="#drinks">
+                                <i class="fa fa-coffee fa-2x text-primary"></i>
+                                <div class="ps-3">
+                                    <small class="text-body">Thơm ngon từng giọt</small>
+                                    <h6 class="mt-n1 mb-0">Đồ uống</h6>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="drinks" class="tab-pane fade show p-0">
+                            <div class="row g-4">
+                                {% for drink in drinks %}
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid rounded food-image"
+                                            src="{{ drink.image.url }}" alt=""
+                                            style="width: 40%; max-width: 40%; max-height: 100%; aspect-ratio: 1280 / 720;">
+                                        <div class="w-100 d-flex flex-column text-start ps-4">
+                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                <span>{{ drink.name }}</span>
+                                                <span class="text-primary">{{ drink.price }}₫</span>
+                                            </h5>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-sm add-to-cart col-4 float-start"
+                                                    data-name="{{ drink.name }}"
+                                                    data-price="{{ drink.price }}">Thêm</button>
+                                                <button class="btn btn-primary btn-sm remove-from-cart col-4 float-end"
+                                                    data-name="{{ drink.name }}"
+                                                    data-price="{{ drink.price }}">Giảm</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="foods" class="tab-pane fade show p-0 active">
+                            <div class="row g-4">
+                                {% for food in foods %}
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center">
+                                        <img class="flex-shrink-0 img-fluid rounded food-image"
+                                            src="{{ food.image.url }}" alt=""
+                                            style="width: 40%; max-width: 40%; max-height: 100%; aspect-ratio: 1280 / 720;">
+                                        <div class="w-100 d-flex flex-column text-start ps-4">
+                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                <span>{{ food.name }}</span>
+                                                <span class="text-primary">{{ food.price }}₫</span>
+                                            </h5>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-sm add-to-cart col-4 float-start"
+                                                    data-name="{{ food.name }}"
+                                                    data-price="{{ food.price }}">Thêm</button>
+                                                <button class="btn btn-primary btn-sm remove-from-cart col-4 float-end"
+                                                    data-name="{{ food.name }}"
+                                                    data-price="{{ food.price }}">Giảm</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="mt-5">
+                        <h3>Danh sách món đã chọn</h3>
+                        <table class="table table-bordered" id="selected-items">
+                            <thead>
+                                <tr>
+                                    <th>Tên món</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="mt-5 row">
+                            <div class="col-md-2">
+                                <h4 class="text-start">Tiền cọc bàn</h4>
+                            </div>
+                            <div class="col-md-1">
+                                <h4 class="text-start">:</h4>
+                            </div>
+                            <div class="col-md-4">
+                                <h4><span id="deposit-amount">50000</span>₫</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h4 class="text-start">Tiền đặt món</h4>
+                            </div>
+                            <div class="col-md-1">
+                                <h4 class="text-start">:</h4>
+                            </div>
+                            <div class="col-md-4">
+                                <h4><span id="total-amount">0</span>₫</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h4 class="text-start">Tổng số tiền</h4>
+                            </div>
+                            <div class="col-md-1">
+                                <h4 class="text-start">:</h4>
+                            </div>
+                            <div class="col-md-4">
+                                <h4><span id="total-money">50000</span>₫</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <form id="checkout-form" action="{% url 'book_order' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="total-money-input" name="total_money" value="50000">
+                <div class="d-flex justify-content-center">
+                    <button id="checkout-btn" class="btn btn-primary btn-sm py-2 px-4" type="button">Thanh toán</button>
+                </div>
+            </form>
+        </div>
+        <!-- jQuery and Bootstrap JS -->
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Custom JS -->
+        <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const cart = {};
+                const totalAmountElem = document.getElementById('total-amount');
+                const depositAmountElem = document.getElementById('deposit-amount');
+                const totalMoneyElem = document.getElementById('total-money');
+                const depositAmount = parseInt(depositAmountElem.textContent, 10);
+                var totalMoneyInput = document.getElementById('total-money-input');
+                document.getElementById('checkout-btn').addEventListener('click', function (event) {
+                    const form = document.getElementById('checkout-form');
+                    const selectedItemsTable = document.getElementById('selected-items').querySelector('tbody');
+                    const inputItemList = document.createElement('input');
+                    inputItemList.type = 'hidden';
+                    inputItemList.name = 'inputItemList';
+                    inputItemList.value = JSON.stringify(cart);
+                    form.appendChild(inputItemList);
+                    const formData = new FormData(form);
+                    console.log("Form Data:");
+                    formData.forEach((value, key) => {
+                        console.log(`${key}: ${value}`);
+                    });
+                    form.submit();
+                });
+
+                function updateCart() {
+                    const selectedItemsTable = document.getElementById('selected-items').querySelector('tbody');
+                    selectedItemsTable.innerHTML = '';
+                    let totalAmount = 0;
+
+
+                    for (let itemName in cart) {
+                        const item = cart[itemName];
+                        const row = document.createElement('tr');
+
+                        const nameCell = document.createElement('td');
+                        nameCell.textContent = itemName;
+                        row.appendChild(nameCell);
+
+                        const quantityCell = document.createElement('td');
+                        quantityCell.textContent = item.quantity;
+                        row.appendChild(quantityCell);
+
+                        const priceCell = document.createElement('td');
+                        priceCell.textContent = item.price * item.quantity + '₫';
+                        row.appendChild(priceCell);
+
+                        selectedItemsTable.appendChild(row);
+                        totalAmount += item.price * item.quantity;
+                        // Xác định loại món và cập nhật giá trị tương ứng
+
+                    }
+
+                    // Cập nhật giá trị của totalMoneyInput
+                    totalAmountElem.textContent = totalAmount;
+                    totalMoneyElem.textContent = totalAmount + depositAmount;
+                    totalMoneyInput.value = totalMoneyElem.textContent;
+
+                }
+                document.querySelectorAll('.add-to-cart').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        const name = this.getAttribute('data-name');
+                        const price = parseInt(this.getAttribute('data-price'), 10);
+
+                        if (!cart[name]) {
+                            cart[name] = { price: price, quantity: 0 };
+                        }
+                        cart[name].quantity += 1;
+                        updateCart();
+                    });
+                });
+                document.querySelectorAll('.remove-from-cart').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        const name = this.getAttribute('data-name');
+                        const price = parseInt(this.getAttribute('data-price'), 10);
+
+                        if (cart[name]) {
+                            cart[name].quantity -= 1;
+                            if (cart[name].quantity === 0) {
+                                delete cart[name];
+                            }
+                            updateCart();
+                        }
+                    });
+                });
+
+            });
+        </script>
+        <!-- Menu End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    {% endblock %}
+</body>
+
+</html>

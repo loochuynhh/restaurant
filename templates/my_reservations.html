@@ -76,6 +76,11 @@
                         <th>Bắt đầu</th>
                         <th>Kết thúc</th>
                         <th>Số người</th>
+<<<<<<< HEAD
+=======
+                        <th>Bàn</th>
+                        <th>Tổng tiền</th>
+>>>>>>> Restaurant/master
                         <th>Trạng thái</th>
                     </tr>
                 </thead>
@@ -85,10 +90,26 @@
                         <td>{{ reservation.start_time }}</td>
                         <td>{{ reservation.end_time }}</td>
                         <td>{{ reservation.people_count }}</td>
+<<<<<<< HEAD
                         <td>
                             {% if reservation.end_time < now %} Đã xong {% elif reservation.is_activated %} Đã thanh
                                 toán {% elif reservation.creation_time < now|date:"Y-m-d H:i:s"|add:"-1 hour" %} Hủy {%
                                 else %} Chưa thanh toán {% endif %} </td>
+=======
+                        <td>{{ reservation.table_name }}</td>
+                        <td>{{ reservation.total_price }}</td>
+                        <td>
+                            {% if reservation.end_time < now %}
+                                Đã xong
+                            {% elif reservation.is_activated %}
+                                Đã thanh toán
+                            {% elif reservation.creation_time < now|date:"Y-m-d H:i:s"|add:"-1 hour" %}
+                                Hủy
+                            {% else %}
+                                Chưa thanh toán
+                            {% endif %}
+                        </td>
+>>>>>>> Restaurant/master
                     </tr>
                     {% empty %}
                     <tr>

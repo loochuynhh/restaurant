@@ -17,6 +17,7 @@
 {% block content %}
 <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
     <div class="container">
+<<<<<<< HEAD
         <div class="text-center">
             <div class="panel-heading">{{ title }}: {{ result }}</div>
             <div class="panel-body">
@@ -40,6 +41,45 @@
                 <button class="btn btn-primary btn-sm py-2 px-4" type="submit">Về trang chủ</button>
             </div>                    
         </form>
+=======
+
+        <div class="container py-5">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">{{ title }}</div>
+                            <div class="card-body">
+                                {% if result == "Thành công" %}
+                                <div class="alert alert-success" role="alert">
+                                    Thanh toán thành công!
+                                </div>
+                                <p>Thông tin đơn hàng:</p>
+                                <ul>
+                                    <li>Mã đơn hàng: {{ order_id }}</li>
+                                    <li>Số tiền thanh toán: {{ amount }}</li>
+                                    <li>Mô tả đơn hàng: {{ order_desc }}</li>
+                                    <li>Mã giao dịch: {{ vnp_TransactionNo }}</li>
+                                    <li>Mã phản hồi: {{ vnp_ResponseCode }}</li>
+                                </ul>
+                                {% elif result == "Lỗi" %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ msg }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="/">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary btn-sm py-2 px-4" type="submit">Về trang chủ</button>
+                </div>
+            </form>
+        </div>
+>>>>>>> Restaurant/master
     </div>
 </div>
 {% endblock %}

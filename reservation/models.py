@@ -1,7 +1,7 @@
 from django.db import models
 from table.models import Table
 from account.models import Account
-
+from menu.models import Menu
 # Create your models here.
 class Reservation(models.Model):
     start_time = models.DateTimeField()
@@ -11,6 +11,10 @@ class Reservation(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(auto_now_add=True)
     is_activated = models.BooleanField()
+<<<<<<< HEAD
+=======
+    total_price = models.PositiveIntegerField(default=0)
+>>>>>>> Restaurant/master
     
 class Payment(models.Model):
     order_id = models.CharField(max_length=100)
